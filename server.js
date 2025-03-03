@@ -13,6 +13,7 @@ import rateLimit from "express-rate-limit";
 
 
 const app = express();
+app.set('trust proxy', 1); // Confia no primeiro proxy (Railway)
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ const PORT = process.env.PORT || 4040;
 
 const ALLOWED_IP = process.env.ALLOWED_IPS 
 
+/*
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000, 
   max: 10, 
@@ -30,7 +32,7 @@ const limiter = rateLimit({
   standardHeaders: true, 
   legacyHeaders: false, 
 });
-
+*/
 
 
 app.use((req, res, next) => {
@@ -40,9 +42,8 @@ app.use((req, res, next) => {
   
   console.log("🌍 IP recebido:", clientIP);
 
-  if (clientIP !== ALLOWED_IP) {
-    // Aplica o rate limiting para IPs não autorizados
-    return limiter(req, res, next); 
+ if (clientIP !== ALLOWED_IP) {
+    return res.status(403).json({ success: false, message: "IP não autorizado" });  // Se o IP não for autorizado, retorna erro 403
   }
 
   next();

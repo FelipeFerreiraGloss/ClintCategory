@@ -1,0 +1,57 @@
+import clintApi from '@api/clint-api';
+import dotenv from 'dotenv';
+import cicloDeCompra from '../functions/ciclo.js';
+
+dotenv.config({ path: "./.env" });
+
+// Inicializa o servidor da API apenas uma vez
+clintApi.server('https://api.clint.digital/v1');
+
+async function postFields(clintId, fieldObs, obs, cicloCompra, dataVendas, qtdCompra, valorCompra, ticketMedio) {
+  try {
+    console.log(dataVendas, "DENTRO DO POSTFIELDS");
+
+    const updatedObservations = `📌 ${new Date().toLocaleString()}: ${fieldObs}\n${obs || ""}`;
+    const updatedDataVendas = `${new Date().toLocaleDateString("pt-BR")} | ${dataVendas || ""}`;
+    const updatedQtdCompras = (parseInt(qtdCompra, 10) || 0) + 1;
+    const updatedTicketMedio = (ticketMedio + valorCompra) / updatedQtdCompras;
+
+    console.log(updatedDataVendas);
+
+    const novoCicloCompra = cicloDeCompra(updatedDataVendas);
+
+    console.log(novoCicloCompra);
+
+    const response = await clintApi.postContactsId({
+      fields: {
+        observacoes: updatedObservations,
+        data_das_vendas: updatedDataVendas,
+        quantidade_de_compra: updatedQtdCompras,
+        ciclo_de_compra: novoCicloCompra,
+        id_clint: clintId,
+        ticket_medio: updatedTicketMedio
+      }
+    }, {
+      id: clintId,
+      'api-token': process.env.CLINT_TOKEN
+    });
+
+    if (response.status === 200) {
+      const message = `✅ Cliente ${clintId} atualizado com sucesso!`;
+      console.log(message);
+      return { success: true, message };
+    }
+
+    throw new Error("Resposta inesperada da API."); // Garante que sempre haja um retorno explícito
+
+  } catch (error) {
+    console.error(`❌ Erro ao atualizar o cliente ${clintId}:`, error);
+    
+    return {
+      success: false,
+      message: "Erro ao atualizar os dados do cliente. Tente novamente mais tarde."
+    };
+  }
+}
+
+export default postFields;

@@ -1,8 +1,8 @@
 {
   "type": "module",
   "scripts": {
-  "start": "node server.js"
-}
+    "start": "node server.js"
+  },
   "dependencies": {
     "@api/clint-api": "file:.api/apis/clint-api",
     "@prisma/client": "^6.3.1",

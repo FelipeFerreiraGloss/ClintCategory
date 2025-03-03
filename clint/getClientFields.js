@@ -1,21 +1,20 @@
 import clintApi from '@api/clint-api';
 import dotenv from 'dotenv';
 
-dotenv.config(); // Railway já carrega as variáveis automaticamente
+dotenv.config(); 
 
-// ✅ Inicializa a API uma única vez
 clintApi.server('https://api.clint.digital/v1');
 
-async function getClient(deal_id) {
+async function getFields(clintId) {
     try {
-        // ✅ Validação para evitar erro se a variável de ambiente não estiver definida
+    
         if (!process.env.CLINT_TOKEN) {
             throw new Error("❌ CLINT_TOKEN não está definido nas variáveis de ambiente!");
         }
 
-        const response = await clintApi.getDealsId({
-            id: deal_id,
-            'api-token': process.env.CLINT_TOKEN
+        const response = await clintApi.getContactsId({
+            id: clintId,
+            'api-token':process.env.CLINT_TOKEN
         });
 
         const data = response.data;
@@ -27,14 +26,19 @@ async function getClient(deal_id) {
         }
 
         return {
-            clintId: data.data.contact?.id || "Sem Cliente ID",
-            nome: data.data.contact?.name || "Sem Nome",
+            obs: data.data.fields.observacoes || "",
+            idClint: data.data.fields.id_clint || "",
+            cicloCompra: data.data.fields.ciclo_de_compra || "",
+            dataVendas: data.data.fields.data_das_vendas || "",
+            qtdCompra: data.data.fields.quantidade_de_compra || "",
+            ticketMedio: data.data.fields.ticket_medio || "",
+            
         };
 
     } catch (error) {
         console.error("❌ Erro ao buscar o deal:", error.message);
-        return null; // Retorna null em caso de erro
+        return null; 
     }
 }
 
-export default getClient;
+export default getFields;

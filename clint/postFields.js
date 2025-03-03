@@ -2,23 +2,25 @@ import clintApi from '@api/clint-api';
 import dotenv from 'dotenv';
 import cicloDeCompra from '../functions/ciclo.js';
 
-dotenv.config({ path: "./.env" });
+dotenv.config(); 
 
-// Inicializa o servidor da API apenas uma vez
 clintApi.server('https://api.clint.digital/v1');
 
 async function postFields(clintId, fieldObs, obs, cicloCompra, dataVendas, qtdCompra, valorCompra, ticketMedio) {
   try {
-    console.log(dataVendas, "DENTRO DO POSTFIELDS");
 
+    if (!process.env.CLINT_TOKEN) {
+      throw new Error("❌ CLINT_TOKEN não está definido nas variáveis de ambiente!");
+    }
+    
     const updatedObservations = `📌 ${new Date().toLocaleString()}: ${fieldObs}\n${obs || ""}`;
     const updatedDataVendas = `${new Date().toLocaleDateString("pt-BR")} | ${dataVendas || ""}`;
     const updatedQtdCompras = (parseInt(qtdCompra, 10) || 0) + 1;
-    const updatedTicketMedio = (ticketMedio + valorCompra) / updatedQtdCompras;
+    const updatedTicketMedio = ((ticketMedio * qtdCompra) + valorCompra) / updatedQtdCompras;
 
     console.log(updatedDataVendas);
 
-    const novoCicloCompra = cicloDeCompra(updatedDataVendas);
+    const novoCicloCompra = cicloDeCompra(updatedDataVendas, cicloCompra, qtdCompra);
 
     console.log(novoCicloCompra);
 
@@ -33,7 +35,7 @@ async function postFields(clintId, fieldObs, obs, cicloCompra, dataVendas, qtdCo
       }
     }, {
       id: clintId,
-      'api-token': process.env.CLINT_TOKEN
+      'api-token':process.env.CLINT_TOKEN
     });
 
     if (response.status === 200) {

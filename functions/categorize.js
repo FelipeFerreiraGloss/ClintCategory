@@ -1,14 +1,14 @@
 import calcularBisnagas from "./bisnagas.js"
 
 
-async function categorize(qtdCadeiras, valorCompra, cicloCompra) {
+async function categorize(qtdCadeiras, valorCompra, cicloCompra, ticketMedio) {
 
     let diasTrabalhados = 20
     let mes = 30
     let rendimentoBisnaga = 4
 
-
-    valorCompra = valorCompra === 0 ? 200 : valorCompra // 200 sendo o kit mais barato
+    qtdCadeiras = qtdCadeiras === 0 ? 2 : qtdCadeiras
+    valorCompra = valorCompra === 0 ? (ticketMedio !== 0 ? ticketMedio : 444) : valorCompra;
 
     console.log(`${qtdCadeiras} cadeiras, ${valorCompra} valor, ${cicloCompra} ciclo de compra`)
 

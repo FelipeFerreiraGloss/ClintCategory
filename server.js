@@ -8,10 +8,13 @@ import getClient from "./clint/getClientId.js";
 import observation from "./functions/observations.js";
 import postFields from "./clint/postFields.js";
 import getFields from "./clint/getClientFields.js";
+import postFieldsObs from "./clint/postFieldsObs.js";
+import rateLimit from "express-rate-limit";
+
 
 const app = express();
 
-dotenv.config({ path: path.resolve("./.env") }); 
+dotenv.config();
 
 app.use(express.json());
 app.use(helmet()); 
@@ -19,6 +22,16 @@ app.use(helmet());
 const PORT = process.env.PORT || 4040;
 
 const ALLOWED_IP = process.env.ALLOWED_IPS 
+
+const limiter = rateLimit({
+  windowMs: 60 * 60 * 1000, 
+  max: 10, 
+  message: "Muitas requisições feitas, tente novamente em 1 hora.",
+  standardHeaders: true, 
+  legacyHeaders: false, 
+});
+
+
 
 app.use((req, res, next) => {
 
@@ -28,34 +41,28 @@ app.use((req, res, next) => {
   console.log("🌍 IP recebido:", clientIP);
 
   if (clientIP !== ALLOWED_IP) {
-    console.log("🚫 ACESSO NEGADO: IP não autorizado!");
-    return res.status(403).json({ error: "Acesso negado. IP não autorizado." });
+    // Aplica o rate limiting para IPs não autorizados
+    return limiter(req, res, next); 
   }
 
   next();
 });
 
-
-// 🔹 Rota de teste
-app.get("/", (req, res) => {
-  res.send("Servidor rodando com Express!");
-});
-
 // 🔹 Captura de requisição do CRM
-app.post("/clint", async (req, res) => { // Adicionei "async" aqui
+app.post("/category", async (req, res) => { 
   console.log("📩 Requisição recebida da Clint!");
   
-  const dados = req.body; // Extrair corpo da requisição
+  const dados = req.body; 
   console.log(dados)
 
   const deal_id = dados.deal_id;
-  const cicloCompra = dados.contact_ciclo_de_compra || 90; // Se vier vazio, define como 90
-  //const ticketMedio = dados.contact_ticket_medio || 0;
-  const valorCompra = dados.deal_value || 200;
-  const qtdCadeiras = Number(dados.organization_quantas_cadeiras_tem); // Converte para número
+  const cicloCompra = dados.contact_ciclo_de_compra || 90; // Padrao definido 90
+  const valorCompra = dados.deal_value;
+  const qtdCadeiras = Number(dados.organization_quantas_cadeiras_tem);
+  const ticketMedio = dados.contact_ticket_medio || 0;
  
   // Chama a função categorize
-  const { categoria, aplicacoesIdeal, bisnagasIdeal, bisnagasMensal, aplicacoesMensal, resultado } = await categorize(qtdCadeiras, valorCompra, cicloCompra);
+  const { categoria, aplicacoesIdeal, bisnagasIdeal, bisnagasMensal, aplicacoesMensal, resultado } = await categorize(qtdCadeiras, valorCompra, cicloCompra, ticketMedio);
 
   const obsString = await observation(categoria, aplicacoesIdeal, bisnagasIdeal, bisnagasMensal, aplicacoesMensal, resultado)
 
@@ -69,12 +76,49 @@ app.post("/clint", async (req, res) => { // Adicionei "async" aqui
 
     await postFields(clintId, obsString, obs, cicloCompra, dataVendas, qtdCompra, valorCompra, ticketMedio)
     
-    return res.status(200).json({ success: true, message}); // Retornar sucesso corretamente
+    return res.status(200).json({ success: true, message}); 
   } catch (error) {
-    console.error("Erro ao processar a requisição:", error); // Mantém log interno
+    console.error("Erro ao processar a requisição:", error);
     return res.status(500).json({ 
       success: false, 
-      message: "Ocorreu um erro no processamento." // Mensagem genérica para o cliente
+      message: "Ocorreu um erro no processamento." 
+    });
+  }
+});
+
+
+app.post("/vendas", async (req, res) => { 
+  console.log("📩 Requisição recebida da Clint!");
+  
+  const dados = req.body; 
+  console.log(dados)
+
+  const deal_id = dados.deal_id;
+  const cicloCompra = dados.contact_ciclo_de_compra || 90; // Padrao definido 90
+  const valorCompra = dados.deal_value;
+  const qtdCadeiras = Number(dados.organization_quantas_cadeiras_tem);
+  const ticketMedio = dados.contact_ticket_medio || 0;
+
+  const { categoria, aplicacoesIdeal, bisnagasIdeal, bisnagasMensal, aplicacoesMensal, resultado } = await categorize(qtdCadeiras, valorCompra, cicloCompra, ticketMedio);
+
+  const obsString = await observation(categoria, aplicacoesIdeal, bisnagasIdeal, bisnagasMensal, aplicacoesMensal, resultado)
+
+  try {
+
+    const message = await postCategory(deal_id, categoria);
+
+    const {clintId, nome} = await getClient(deal_id)
+
+    const {obs} = await getFields(clintId)
+
+    await postFieldsObs(clintId, obsString, obs)
+    
+    return res.status(200).json({ success: true, message}); 
+  } catch (error) {
+    console.error("Erro ao processar a requisição:", error); 
+    return res.status(500).json({ 
+      success: false, 
+      message: "Ocorreu um erro no processamento." 
     });
   }
 });

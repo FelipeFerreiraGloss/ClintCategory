@@ -13,21 +13,21 @@ function calcularBisnagas(valorCompra) {
   if (valorCompra >= 3159 && valorCompra < 3359) return 36;
   if (valorCompra >= 3359 && valorCompra < 3689) return 40;
   if (valorCompra >= 3689 && valorCompra < 3869) return 44;
-  if (valorCompra >= 3869 && valorCompra < 4189) return 48;
-  if (valorCompra >= 4189 && valorCompra < 4389) return 48;
-  if (valorCompra >= 4389 && valorCompra < 4679) return 52;
-  if (valorCompra >= 4679 && valorCompra < 4869) return 56;
-  if (valorCompra >= 4869 && valorCompra < 5159) return 60;
-  if (valorCompra >= 5159 && valorCompra < 5319) return 64;
-  if (valorCompra >= 5319 && valorCompra < 5609) return 68;
-  if (valorCompra >= 5609 && valorCompra < 5729) return 72;
-  if (valorCompra >= 5729 && valorCompra < 6019) return 76;
-  if (valorCompra >= 6019 && valorCompra < 6219) return 80;
-  if (valorCompra >= 6219 && valorCompra < 6489) return 84;
-  if (valorCompra >= 6489 && valorCompra < 6659) return 88;
+  if (valorCompra >= 3869 && valorCompra < 4189) return 52;
+  if (valorCompra >= 4189 && valorCompra < 4389) return 56;
+  if (valorCompra >= 4389 && valorCompra < 4679) return 60;
+  if (valorCompra >= 4679 && valorCompra < 4869) return 64;
+  if (valorCompra >= 4869 && valorCompra < 5159) return 68;
+  if (valorCompra >= 5159 && valorCompra < 5319) return 72;
+  if (valorCompra >= 5319 && valorCompra < 5609) return 76;
+  if (valorCompra >= 5609 && valorCompra < 5729) return 80;
+  if (valorCompra >= 5729 && valorCompra < 6019) return 84;
+  if (valorCompra >= 6019 && valorCompra < 6219) return 88;
+  if (valorCompra >= 6219 && valorCompra < 6489) return 92;
+  if (valorCompra >= 6489 && valorCompra < 6659) return 96;
   if (valorCompra >= 6659) return 100;
 
-  return 100; // Caso o valor seja acima do último intervalo
+  return 100; 
 }
 
 export default calcularBisnagas;

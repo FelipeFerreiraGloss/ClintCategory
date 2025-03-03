@@ -1,14 +1,14 @@
 import clintApi from '@api/clint-api';
 import dotenv from 'dotenv';
 
-dotenv.config(); // Railway já carrega as variáveis automaticamente
+dotenv.config(); 
 
-// ✅ Inicializa a API uma única vez
+
 clintApi.server('https://api.clint.digital/v1');
 
 async function postCategory(deal_id, categoria) {
   try {
-    // ✅ Validação para evitar erro se a variável de ambiente não estiver definida
+   
     if (!process.env.CLINT_TOKEN) {
       throw new Error("❌ CLINT_TOKEN não está definido nas variáveis de ambiente!");
     }
@@ -17,7 +17,7 @@ async function postCategory(deal_id, categoria) {
 
     const response = await clintApi.postDealsId(
       { stage: categoria, status: 'OPEN' },
-      { id: deal_id, 'api-token': process.env.CLINT_TOKEN }
+      { id: deal_id, 'api-token':process.env.CLINT_TOKEN}
     );
 
     if (response.status === 200) {

@@ -16,7 +16,7 @@ const app = express();
 
 dotenv.config();
 
-app.set('trust proxy', 1); 
+app.set('trust proxy', 'loopback');
 
 app.use(express.json());
 app.use(helmet()); 

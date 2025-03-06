@@ -1,0 +1,3739 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Clint API",
+    "description": "API for managing contacts, deals, and tags in the Clint application",
+    "contact": {
+      "name": "API Support",
+      "url": "http://www.example.com/support",
+      "email": "support@example.com"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.clint.digital/v1",
+      "description": "The production API server"
+    },
+    {
+      "url": "http://localhost:4004/v1",
+      "description": "The development API server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Contacts",
+      "description": "Operations related to managing contacts"
+    },
+    {
+      "name": "Deals",
+      "description": "Operations related to managing deals"
+    },
+    {
+      "name": "Groups",
+      "description": "Operations related to managing deals"
+    },
+    {
+      "name": "Lost Status",
+      "description": "Operations related to managing lost status"
+    },
+    {
+      "name": "Origins",
+      "description": "Operations related to managing origins"
+    },
+    {
+      "name": "Tags",
+      "description": "Operations related to managing tags"
+    },
+    {
+      "name": "Users",
+      "description": "Operations related to managing users"
+    }
+  ],
+  "paths": {
+    "/account/fields": {
+      "get": {
+        "summary": "List fields",
+        "tags": [
+          "Account"
+        ],
+        "description": "Retrieve a list of fields",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "groups": {
+                                "type": "object",
+                                "properties": {
+                                  "DEAL": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "CONTACT": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "ORGANIZATION": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                      "type": "string"
+                                    }
+                                  }
+                                }
+                              },
+                              "fields": {
+                                "type": "object",
+                                "properties": {
+                                  "DEAL": {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "example": "TEXT"
+                                      },
+                                      "group": {
+                                        "type": "string",
+                                        "example": "default"
+                                      },
+                                      "label": {
+                                        "type": "string",
+                                        "example": "notes"
+                                      }
+                                    }
+                                  },
+                                  "CONTACT": {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "example": "TEXT"
+                                      },
+                                      "group": {
+                                        "type": "string",
+                                        "example": "default"
+                                      },
+                                      "label": {
+                                        "type": "string",
+                                        "example": "notes"
+                                      }
+                                    }
+                                  },
+                                  "ORGANIZATION": {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "example": "TEXT"
+                                      },
+                                      "group": {
+                                        "type": "string",
+                                        "example": "default"
+                                      },
+                                      "label": {
+                                        "type": "string",
+                                        "example": "notes"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts": {
+      "get": {
+        "summary": "List contacts",
+        "tags": [
+          "Contacts"
+        ],
+        "description": "Retrieve a paginated list of contacts",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "Max number of rows returned",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 200,
+              "maximum": 1000,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Number of rows skipped of the result",
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Select the page of the result",
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Filter by origin ID",
+            "in": "query",
+            "name": "origin_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            }
+          },
+          {
+            "description": "Filter by contact name",
+            "in": "query",
+            "name": "name",
+            "schema": {
+              "type": "string",
+              "example": "Contact name"
+            }
+          },
+          {
+            "description": "Filter by contact ddi",
+            "in": "query",
+            "name": "ddi",
+            "schema": {
+              "type": "string",
+              "example": "55"
+            }
+          },
+          {
+            "description": "Filter by contact phone",
+            "in": "query",
+            "name": "phone",
+            "schema": {
+              "type": "string",
+              "example": "999999999"
+            }
+          },
+          {
+            "description": "Filter by contact e-mail",
+            "in": "query",
+            "name": "email",
+            "schema": {
+              "type": "string",
+              "example": "contact@email.com"
+            }
+          },
+          {
+            "description": "Filter by contact tag IDs using OR operator. Separated by ','",
+            "in": "query",
+            "name": "tag_ids",
+            "schema": {
+              "type": "string",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8,99999999-d77b-4e8b-9d35-fd43e972b999"
+            }
+          },
+          {
+            "description": "Filter by contact tag names using OR operator. Separated by ','",
+            "in": "query",
+            "name": "tag_names",
+            "schema": {
+              "type": "string",
+              "example": "tag1,tag2,tag3"
+            }
+          },
+          {
+            "description": "Filter by contact fields. Can be used multiple times for each field",
+            "in": "query",
+            "name": "fields",
+            "style": "deepObject",
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of contacts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "integer",
+                          "example": "200",
+                          "description": "Response status"
+                        },
+                        "totalCount": {
+                          "type": "integer",
+                          "example": "50",
+                          "description": "Total items based on current filters"
+                        },
+                        "page": {
+                          "type": "integer",
+                          "example": "1",
+                          "description": "Current page"
+                        },
+                        "totalPages": {
+                          "type": "integer",
+                          "example": "10",
+                          "description": "Total pages based on current filters"
+                        },
+                        "hasNext": {
+                          "type": "boolean",
+                          "example": "true",
+                          "description": "Indicates that has next page"
+                        },
+                        "hasPrevious": {
+                          "type": "boolean",
+                          "example": "true",
+                          "description": "Indicates that has previous page"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                              },
+                              "created_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2020-01-01T14:15:00.000000+00:00"
+                              },
+                              "updated_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2020-01-01T14:15:00.000000+00:00"
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Contact name"
+                              },
+                              "email": {
+                                "type": "string",
+                                "example": "contact@email.com"
+                              },
+                              "organization": {
+                                "type": "string",
+                                "example": "Organization name"
+                              },
+                              "instagram": {
+                                "type": "string",
+                                "example": "Instagram ID"
+                              },
+                              "tags": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "format": "uuid",
+                                      "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "example": "Tag name"
+                                    },
+                                    "color": {
+                                      "type": "string",
+                                      "default": "#f44336",
+                                      "enum": [
+                                        "#f44336",
+                                        "#e91e63",
+                                        "#9c27b0",
+                                        "#673ab7",
+                                        "#3f51b5",
+                                        "#2196f3",
+                                        "#03a9f4",
+                                        "#00bcd4",
+                                        "#009688",
+                                        "#4caf50",
+                                        "#8bc34a",
+                                        "#faa200",
+                                        "#ff9800",
+                                        "#ff5722",
+                                        "#795548",
+                                        "#607d8b"
+                                      ]
+                                    }
+                                  }
+                                }
+                              },
+                              "fields": {
+                                "type": "object"
+                              },
+                              "fullPhone": {
+                                "type": "string",
+                                "example": "+5548999999999"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create contact",
+        "tags": [
+          "Contacts"
+        ],
+        "description": "Create a new Contact",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Contact name"
+                  },
+                  "ddi": {
+                    "type": "string",
+                    "example": "+55"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "48999999999"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "contact@email.com"
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "Instagram ID"
+                  },
+                  "fields": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "properties": {
+                      "organization": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/{id}": {
+      "get": {
+        "summary": "Get contact",
+        "tags": [
+          "Contacts"
+        ],
+        "description": "Retrieve a single contact by ID",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "UUID",
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A contact object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "integer",
+                          "example": "200",
+                          "description": "Response status"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                            },
+                            "created_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "example": "2020-01-01T14:15:00.000000+00:00"
+                            },
+                            "updated_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "example": "2020-01-01T14:15:00.000000+00:00"
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Contact name"
+                            },
+                            "email": {
+                              "type": "string",
+                              "example": "contact@email.com"
+                            },
+                            "organization": {
+                              "type": "string",
+                              "example": "Organization name"
+                            },
+                            "instagram": {
+                              "type": "string",
+                              "example": "Instagram ID"
+                            },
+                            "tags": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "example": "Tag name"
+                                  },
+                                  "color": {
+                                    "type": "string",
+                                    "default": "#f44336",
+                                    "enum": [
+                                      "#f44336",
+                                      "#e91e63",
+                                      "#9c27b0",
+                                      "#673ab7",
+                                      "#3f51b5",
+                                      "#2196f3",
+                                      "#03a9f4",
+                                      "#00bcd4",
+                                      "#009688",
+                                      "#4caf50",
+                                      "#8bc34a",
+                                      "#faa200",
+                                      "#ff9800",
+                                      "#ff5722",
+                                      "#795548",
+                                      "#607d8b"
+                                    ]
+                                  }
+                                }
+                              }
+                            },
+                            "fields": {
+                              "type": "object"
+                            },
+                            "fullPhone": {
+                              "type": "string",
+                              "example": "+5548999999999"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Update contact",
+        "tags": [
+          "Contacts"
+        ],
+        "description": "Update a single contact",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "UUID",
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Contact name"
+                  },
+                  "ddi": {
+                    "type": "string",
+                    "example": "+55"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "48999999999"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "contact@email.com"
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "Instagram ID"
+                  },
+                  "fields": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "properties": {
+                      "organization": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove contact",
+        "tags": [
+          "Contacts"
+        ],
+        "description": "Remove a single contact by ID",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "UUID",
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/contacts/{id}/tags": {
+      "post": {
+        "summary": "Add tags",
+        "tags": [
+          "Contacts"
+        ],
+        "description": "Add tags to a single contact",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "UUID",
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "Tag"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove tag",
+        "tags": [
+          "Contacts"
+        ],
+        "description": "Remove a tag from a contact",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "UUID",
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            },
+            "required": true
+          },
+          {
+            "name": "tag_id",
+            "in": "query",
+            "description": "The ID of the tag to be removed",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            }
+          },
+          {
+            "name": "tag_name",
+            "in": "query",
+            "description": "The name of the tag to be removed",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "my-tag"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "You must provide either a tag id or a tag name"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/deals": {
+      "get": {
+        "summary": "List deals",
+        "tags": [
+          "Deals"
+        ],
+        "description": "Retrieve a paginated list of deals",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "Max number of rows returned",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 200,
+              "maximum": 1000,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Number of rows skipped of the result",
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Select the page of the result",
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Filter by origin ID",
+            "in": "query",
+            "name": "origin_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            }
+          },
+          {
+            "description": "Filter by created_at using GTE operator",
+            "in": "query",
+            "name": "created_at_start",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2020-01-01T14:15:00.000000+00:00"
+            }
+          },
+          {
+            "description": "Filter by created_at using LTE operator",
+            "in": "query",
+            "name": "created_at_end",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2020-01-01T14:15:00.000000+00:00"
+            }
+          },
+          {
+            "description": "Filter by updated_at using GTE operator",
+            "in": "query",
+            "name": "updated_at_start",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2020-01-01T14:15:00.000000+00:00"
+            }
+          },
+          {
+            "description": "Filter by updated_at using LTE operator",
+            "in": "query",
+            "name": "updated_at_end",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2020-01-01T14:15:00.000000+00:00"
+            }
+          },
+          {
+            "description": "Filter by user ID",
+            "in": "query",
+            "name": "user_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            }
+          },
+          {
+            "description": "Filter by user e-mail",
+            "in": "query",
+            "name": "user_email",
+            "schema": {
+              "type": "string",
+              "example": "user@email.com"
+            }
+          },
+          {
+            "description": "Filter by contact ID",
+            "in": "query",
+            "name": "contact_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            }
+          },
+          {
+            "description": "Filter by contact phone",
+            "in": "query",
+            "name": "phone",
+            "schema": {
+              "type": "string",
+              "example": "999999999"
+            }
+          },
+          {
+            "description": "Filter by contact e-mail",
+            "in": "query",
+            "name": "email",
+            "schema": {
+              "type": "string",
+              "example": "contact@email.com"
+            }
+          },
+          {
+            "description": "Filter by tag IDs using OR operator. Separated by ','",
+            "in": "query",
+            "name": "tag_ids",
+            "schema": {
+              "type": "string",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8,99999999-d77b-4e8b-9d35-fd43e972b999"
+            }
+          },
+          {
+            "description": "Filter by tag names using OR operator. Separated by ','",
+            "in": "query",
+            "name": "tag_names",
+            "schema": {
+              "type": "string",
+              "example": "tag1,tag2,tag3"
+            }
+          },
+          {
+            "description": "Filter by status",
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string",
+              "default": "OPEN",
+              "enum": [
+                "OPEN",
+                "WON",
+                "LOST"
+              ]
+            }
+          },
+          {
+            "description": "Filter by stage",
+            "in": "query",
+            "name": "stage",
+            "schema": {
+              "type": "string",
+              "default": "BASE"
+            }
+          },
+          {
+            "description": "Filter by updated_stage_at using GTE operator",
+            "in": "query",
+            "name": "updated_stage_at_start",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2020-01-01T14:15:00.000000+00:00"
+            }
+          },
+          {
+            "description": "Filter by updated_stage_at using LTE operator",
+            "in": "query",
+            "name": "updated_stage_at_end",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2020-01-01T14:15:00.000000+00:00"
+            }
+          },
+          {
+            "description": "Filter by contact fields. Can be used multiple times for each field",
+            "in": "query",
+            "name": "fields",
+            "style": "deepObject",
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
+            "description": "Filter by won_at using GTE operator",
+            "in": "query",
+            "name": "won_at_start",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2020-01-01T14:15:00.000000+00:00"
+            }
+          },
+          {
+            "description": "Filter by won_at using LTE operator",
+            "in": "query",
+            "name": "won_at_end",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2020-01-01T14:15:00.000000+00:00"
+            }
+          },
+          {
+            "description": "Filter by lost_at using GTE operator",
+            "in": "query",
+            "name": "lost_at_start",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2020-01-01T14:15:00.000000+00:00"
+            }
+          },
+          {
+            "description": "Filter by lost_at_at using LTE operator",
+            "in": "query",
+            "name": "lost_at_end",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2020-01-01T14:15:00.000000+00:00"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of deals",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "integer",
+                          "example": "200",
+                          "description": "Response status"
+                        },
+                        "totalCount": {
+                          "type": "integer",
+                          "example": "50",
+                          "description": "Total items based on current filters"
+                        },
+                        "page": {
+                          "type": "integer",
+                          "example": "1",
+                          "description": "Current page"
+                        },
+                        "totalPages": {
+                          "type": "integer",
+                          "example": "10",
+                          "description": "Total pages based on current filters"
+                        },
+                        "hasNext": {
+                          "type": "boolean",
+                          "example": "true",
+                          "description": "Indicates that has next page"
+                        },
+                        "hasPrevious": {
+                          "type": "boolean",
+                          "example": "true",
+                          "description": "Indicates that has previous page"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                              },
+                              "origin_id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                              },
+                              "user": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                                  },
+                                  "full_name": {
+                                    "type": "string",
+                                    "example": "User full name"
+                                  }
+                                }
+                              },
+                              "contact": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "example": "Contact name"
+                                  },
+                                  "email": {
+                                    "type": "string",
+                                    "example": "contact@email.com"
+                                  },
+                                  "phone": {
+                                    "type": "string",
+                                    "example": "+5548999999999"
+                                  }
+                                }
+                              },
+                              "created_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2020-01-01T14:15:00.000000+00:00"
+                              },
+                              "stage": {
+                                "type": "string",
+                                "default": "BASE"
+                              },
+                              "updated_stage_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2020-01-01T14:15:00.000000+00:00"
+                              },
+                              "status": {
+                                "type": "string",
+                                "default": "OPEN",
+                                "enum": [
+                                  "OPEN",
+                                  "WON",
+                                  "LOST"
+                                ]
+                              },
+                              "won_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2020-01-01T14:15:00.000000+00:00"
+                              },
+                              "won_by": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                              },
+                              "lost_status_id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                              },
+                              "lost_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2020-01-01T14:15:00.000000+00:00"
+                              },
+                              "lost_by": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                              },
+                              "fields": {
+                                "type": "object"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create deal",
+        "tags": [
+          "Deals"
+        ],
+        "description": "Create a new Deal",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "origin_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Contact name"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "48999999999"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "contact@email.com"
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "Instagram ID"
+                  },
+                  "value": {
+                    "type": "number",
+                    "example": "200.5"
+                  },
+                  "stage": {
+                    "type": "string",
+                    "default": "BASE"
+                  },
+                  "user_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                  },
+                  "contact_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                  },
+                  "fields": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "properties": {
+                      "contact": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      },
+                      "organization": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "origin_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Deal created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/deals/{id}": {
+      "get": {
+        "summary": "Get deal",
+        "tags": [
+          "Deals"
+        ],
+        "description": "Retrieve a single deal by ID",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "UUID",
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A deal object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "integer",
+                          "example": "200",
+                          "description": "Response status"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                            },
+                            "origin_id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                            },
+                            "user": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                                },
+                                "full_name": {
+                                  "type": "string",
+                                  "example": "User full name"
+                                }
+                              }
+                            },
+                            "contact": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "example": "Contact name"
+                                },
+                                "email": {
+                                  "type": "string",
+                                  "example": "contact@email.com"
+                                },
+                                "phone": {
+                                  "type": "string",
+                                  "example": "+5548999999999"
+                                }
+                              }
+                            },
+                            "created_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "example": "2020-01-01T14:15:00.000000+00:00"
+                            },
+                            "stage": {
+                              "type": "string",
+                              "default": "BASE"
+                            },
+                            "updated_stage_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "example": "2020-01-01T14:15:00.000000+00:00"
+                            },
+                            "status": {
+                              "type": "string",
+                              "default": "OPEN",
+                              "enum": [
+                                "OPEN",
+                                "WON",
+                                "LOST"
+                              ]
+                            },
+                            "won_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "example": "2020-01-01T14:15:00.000000+00:00"
+                            },
+                            "won_by": {
+                              "type": "string",
+                              "format": "uuid",
+                              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                            },
+                            "lost_status_id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                            },
+                            "lost_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "example": "2020-01-01T14:15:00.000000+00:00"
+                            },
+                            "lost_by": {
+                              "type": "string",
+                              "format": "uuid",
+                              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                            },
+                            "fields": {
+                              "type": "object"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Update deal",
+        "tags": [
+          "Deals"
+        ],
+        "description": "Update a single deal",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "UUID",
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Contact name"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "48999999999"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "contact@email.com"
+                  },
+                  "value": {
+                    "type": "number",
+                    "example": "200.5"
+                  },
+                  "stage": {
+                    "type": "string",
+                    "default": "BASE"
+                  },
+                  "status": {
+                    "type": "string",
+                    "default": "OPEN",
+                    "enum": [
+                      "OPEN",
+                      "WON",
+                      "LOST"
+                    ]
+                  },
+                  "user_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                  },
+                  "contact_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                  },
+                  "fields": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "properties": {
+                      "contact": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      },
+                      "organization": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Deal updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove deal",
+        "tags": [
+          "Deals"
+        ],
+        "description": "Remove a single deal by ID",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "UUID",
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/groups": {
+      "get": {
+        "summary": "List groups",
+        "tags": [
+          "Groups"
+        ],
+        "description": "Retrieve a paginated list of groups",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "Max number of rows returned",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 200,
+              "maximum": 1000,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Number of rows skipped of the result",
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Select the page of the result",
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of groups",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "integer",
+                          "example": "200",
+                          "description": "Response status"
+                        },
+                        "totalCount": {
+                          "type": "integer",
+                          "example": "50",
+                          "description": "Total items based on current filters"
+                        },
+                        "page": {
+                          "type": "integer",
+                          "example": "1",
+                          "description": "Current page"
+                        },
+                        "totalPages": {
+                          "type": "integer",
+                          "example": "10",
+                          "description": "Total pages based on current filters"
+                        },
+                        "hasNext": {
+                          "type": "boolean",
+                          "example": "true",
+                          "description": "Indicates that has next page"
+                        },
+                        "hasPrevious": {
+                          "type": "boolean",
+                          "example": "true",
+                          "description": "Indicates that has previous page"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Group name"
+                              },
+                              "archived_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2020-01-01T14:15:00.000000+00:00"
+                              },
+                              "archived_by": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/groups/{id}": {
+      "get": {
+        "summary": "Get group",
+        "tags": [
+          "Groups"
+        ],
+        "description": "Retrieve a single group by ID",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "UUID",
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A group object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "integer",
+                          "example": "200",
+                          "description": "Response status"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Group name"
+                            },
+                            "archived_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "example": "2020-01-01T14:15:00.000000+00:00"
+                            },
+                            "archived_by": {
+                              "type": "string",
+                              "format": "uuid",
+                              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lost-status": {
+      "get": {
+        "summary": "List lost status",
+        "tags": [
+          "Lost Status"
+        ],
+        "description": "Retrieve a paginated list of lost status",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "Max number of rows returned",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 200,
+              "maximum": 1000,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Number of rows skipped of the result",
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Select the page of the result",
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of lost status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "integer",
+                          "example": "200",
+                          "description": "Response status"
+                        },
+                        "totalCount": {
+                          "type": "integer",
+                          "example": "50",
+                          "description": "Total items based on current filters"
+                        },
+                        "page": {
+                          "type": "integer",
+                          "example": "1",
+                          "description": "Current page"
+                        },
+                        "totalPages": {
+                          "type": "integer",
+                          "example": "10",
+                          "description": "Total pages based on current filters"
+                        },
+                        "hasNext": {
+                          "type": "boolean",
+                          "example": "true",
+                          "description": "Indicates that has next page"
+                        },
+                        "hasPrevious": {
+                          "type": "boolean",
+                          "example": "true",
+                          "description": "Indicates that has previous page"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Lost status name"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lost-status/{id}": {
+      "get": {
+        "summary": "Get lost status",
+        "tags": [
+          "Lost Status"
+        ],
+        "description": "Retrieve a single lost status by ID",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "UUID",
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A lost status object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "integer",
+                          "example": "200",
+                          "description": "Response status"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Lost status name"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/origins": {
+      "get": {
+        "summary": "List origins",
+        "tags": [
+          "Origins"
+        ],
+        "description": "Retrieve a paginated list of origins",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "Max number of rows returned",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 200,
+              "maximum": 1000,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Number of rows skipped of the result",
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Select the page of the result",
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Filter by group ID",
+            "in": "query",
+            "name": "group_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of origins",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "integer",
+                          "example": "200",
+                          "description": "Response status"
+                        },
+                        "totalCount": {
+                          "type": "integer",
+                          "example": "50",
+                          "description": "Total items based on current filters"
+                        },
+                        "page": {
+                          "type": "integer",
+                          "example": "1",
+                          "description": "Current page"
+                        },
+                        "totalPages": {
+                          "type": "integer",
+                          "example": "10",
+                          "description": "Total pages based on current filters"
+                        },
+                        "hasNext": {
+                          "type": "boolean",
+                          "example": "true",
+                          "description": "Indicates that has next page"
+                        },
+                        "hasPrevious": {
+                          "type": "boolean",
+                          "example": "true",
+                          "description": "Indicates that has previous page"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Origin name"
+                              },
+                              "group": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "example": "Group name"
+                                  }
+                                }
+                              },
+                              "archived_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2020-01-01T14:15:00.000000+00:00"
+                              },
+                              "archived_by": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/origins/{id}": {
+      "get": {
+        "summary": "Get origin",
+        "tags": [
+          "Origins"
+        ],
+        "description": "Retrieve a single origin by ID",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "UUID",
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A origin object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "integer",
+                          "example": "200",
+                          "description": "Response status"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Origin name"
+                            },
+                            "group": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "example": "Group name"
+                                }
+                              }
+                            },
+                            "archived_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "example": "2020-01-01T14:15:00.000000+00:00"
+                            },
+                            "archived_by": {
+                              "type": "string",
+                              "format": "uuid",
+                              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tags": {
+      "get": {
+        "summary": "List tags",
+        "description": "Retrieve a paginated list of tags",
+        "tags": [
+          "Tags"
+        ],
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "Max number of rows returned",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 200,
+              "maximum": 1000,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Number of rows skipped of the result",
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Select the page of the result",
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Filter by tag name",
+            "in": "query",
+            "name": "name",
+            "schema": {
+              "type": "string",
+              "example": "Tag name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of tags",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "integer",
+                          "example": "200",
+                          "description": "Response status"
+                        },
+                        "totalCount": {
+                          "type": "integer",
+                          "example": "50",
+                          "description": "Total items based on current filters"
+                        },
+                        "page": {
+                          "type": "integer",
+                          "example": "1",
+                          "description": "Current page"
+                        },
+                        "totalPages": {
+                          "type": "integer",
+                          "example": "10",
+                          "description": "Total pages based on current filters"
+                        },
+                        "hasNext": {
+                          "type": "boolean",
+                          "example": "true",
+                          "description": "Indicates that has next page"
+                        },
+                        "hasPrevious": {
+                          "type": "boolean",
+                          "example": "true",
+                          "description": "Indicates that has previous page"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Tag name"
+                              },
+                              "color": {
+                                "type": "string",
+                                "default": "#f44336",
+                                "enum": [
+                                  "#f44336",
+                                  "#e91e63",
+                                  "#9c27b0",
+                                  "#673ab7",
+                                  "#3f51b5",
+                                  "#2196f3",
+                                  "#03a9f4",
+                                  "#00bcd4",
+                                  "#009688",
+                                  "#4caf50",
+                                  "#8bc34a",
+                                  "#faa200",
+                                  "#ff9800",
+                                  "#ff5722",
+                                  "#795548",
+                                  "#607d8b"
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create tag",
+        "description": "Create a new tag",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "Tags"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Tag name"
+                  },
+                  "color": {
+                    "type": "string",
+                    "default": "#f44336",
+                    "enum": [
+                      "#f44336",
+                      "#e91e63",
+                      "#9c27b0",
+                      "#673ab7",
+                      "#3f51b5",
+                      "#2196f3",
+                      "#03a9f4",
+                      "#00bcd4",
+                      "#009688",
+                      "#4caf50",
+                      "#8bc34a",
+                      "#faa200",
+                      "#ff9800",
+                      "#ff5722",
+                      "#795548",
+                      "#607d8b"
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "color"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/tags/{id}": {
+      "get": {
+        "summary": "Get tag",
+        "description": "Retrieve a single tag by ID",
+        "tags": [
+          "Tags"
+        ],
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "UUID",
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A tag object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "integer",
+                          "example": "200",
+                          "description": "Response status"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Tag name"
+                            },
+                            "color": {
+                              "type": "string",
+                              "default": "#f44336",
+                              "enum": [
+                                "#f44336",
+                                "#e91e63",
+                                "#9c27b0",
+                                "#673ab7",
+                                "#3f51b5",
+                                "#2196f3",
+                                "#03a9f4",
+                                "#00bcd4",
+                                "#009688",
+                                "#4caf50",
+                                "#8bc34a",
+                                "#faa200",
+                                "#ff9800",
+                                "#ff5722",
+                                "#795548",
+                                "#607d8b"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove tag",
+        "description": "Remove a single tag by ID",
+        "tags": [
+          "Tags"
+        ],
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "UUID",
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "List users",
+        "tags": [
+          "Users"
+        ],
+        "description": "Retrieve a paginated list of users",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "Max number of rows returned",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 200,
+              "maximum": 1000,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Number of rows skipped of the result",
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Select the page of the result",
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "integer",
+                          "example": "200",
+                          "description": "Response status"
+                        },
+                        "totalCount": {
+                          "type": "integer",
+                          "example": "50",
+                          "description": "Total items based on current filters"
+                        },
+                        "page": {
+                          "type": "integer",
+                          "example": "1",
+                          "description": "Current page"
+                        },
+                        "totalPages": {
+                          "type": "integer",
+                          "example": "10",
+                          "description": "Total pages based on current filters"
+                        },
+                        "hasNext": {
+                          "type": "boolean",
+                          "example": "true",
+                          "description": "Indicates that has next page"
+                        },
+                        "hasPrevious": {
+                          "type": "boolean",
+                          "example": "true",
+                          "description": "Indicates that has previous page"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                              },
+                              "email": {
+                                "type": "string",
+                                "example": "User e-mail"
+                              },
+                              "first_name": {
+                                "type": "string",
+                                "example": "User first name"
+                              },
+                              "last_name": {
+                                "type": "string",
+                                "example": "User last name"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "summary": "Get user",
+        "tags": [
+          "Users"
+        ],
+        "description": "Retrieve a single user by ID",
+        "parameters": [
+          {
+            "description": "API Token",
+            "in": "header",
+            "name": "api-token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "description": "UUID",
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A user object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "integer",
+                          "example": "200",
+                          "description": "Response status"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                            },
+                            "email": {
+                              "type": "string",
+                              "example": "User e-mail"
+                            },
+                            "first_name": {
+                              "type": "string",
+                              "example": "User first name"
+                            },
+                            "last_name": {
+                              "type": "string",
+                              "example": "User last name"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "headerParamXAPIKey": {
+        "description": "API Token",
+        "in": "header",
+        "name": "api-token",
+        "schema": {
+          "type": "string"
+        },
+        "required": true
+      },
+      "queryParam_limit": {
+        "description": "Max number of rows returned",
+        "in": "query",
+        "name": "limit",
+        "schema": {
+          "default": 200,
+          "maximum": 1000,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "queryParam_offset": {
+        "description": "Number of rows skipped of the result",
+        "in": "query",
+        "name": "offset",
+        "schema": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "queryParam_page": {
+        "description": "Select the page of the result",
+        "in": "query",
+        "name": "page",
+        "schema": {
+          "default": 1,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "pathParam_id": {
+        "description": "UUID",
+        "in": "path",
+        "name": "id",
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+        },
+        "required": true
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "OK"
+      },
+      "201": {
+        "description": "Created"
+      },
+      "204": {
+        "description": "No Content"
+      },
+      "404": {
+        "description": "Validation error"
+      },
+      "500": {
+        "description": "Internal error"
+      }
+    },
+    "schemas": {
+      "Contact": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2020-01-01T14:15:00.000000+00:00"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2020-01-01T14:15:00.000000+00:00"
+          },
+          "name": {
+            "type": "string",
+            "example": "Contact name"
+          },
+          "email": {
+            "type": "string",
+            "example": "contact@email.com"
+          },
+          "organization": {
+            "type": "string",
+            "example": "Organization name"
+          },
+          "instagram": {
+            "type": "string",
+            "example": "Instagram ID"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Tag name"
+                },
+                "color": {
+                  "type": "string",
+                  "default": "#f44336",
+                  "enum": [
+                    "#f44336",
+                    "#e91e63",
+                    "#9c27b0",
+                    "#673ab7",
+                    "#3f51b5",
+                    "#2196f3",
+                    "#03a9f4",
+                    "#00bcd4",
+                    "#009688",
+                    "#4caf50",
+                    "#8bc34a",
+                    "#faa200",
+                    "#ff9800",
+                    "#ff5722",
+                    "#795548",
+                    "#607d8b"
+                  ]
+                }
+              }
+            }
+          },
+          "fields": {
+            "type": "object"
+          },
+          "fullPhone": {
+            "type": "string",
+            "example": "+5548999999999"
+          }
+        }
+      },
+      "ContactCreateSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Contact name"
+          },
+          "ddi": {
+            "type": "string",
+            "example": "+55"
+          },
+          "phone": {
+            "type": "string",
+            "example": "48999999999"
+          },
+          "email": {
+            "type": "string",
+            "example": "contact@email.com"
+          },
+          "username": {
+            "type": "string",
+            "example": "Instagram ID"
+          },
+          "fields": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "properties": {
+              "organization": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "DateTime": {
+        "type": "string",
+        "format": "date-time",
+        "example": "2020-01-01T14:15:00.000000+00:00"
+      },
+      "Deal": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+          },
+          "origin_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+              },
+              "full_name": {
+                "type": "string",
+                "example": "User full name"
+              }
+            }
+          },
+          "contact": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+              },
+              "name": {
+                "type": "string",
+                "example": "Contact name"
+              },
+              "email": {
+                "type": "string",
+                "example": "contact@email.com"
+              },
+              "phone": {
+                "type": "string",
+                "example": "+5548999999999"
+              }
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2020-01-01T14:15:00.000000+00:00"
+          },
+          "stage": {
+            "type": "string",
+            "default": "BASE"
+          },
+          "updated_stage_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2020-01-01T14:15:00.000000+00:00"
+          },
+          "status": {
+            "type": "string",
+            "default": "OPEN",
+            "enum": [
+              "OPEN",
+              "WON",
+              "LOST"
+            ]
+          },
+          "won_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2020-01-01T14:15:00.000000+00:00"
+          },
+          "won_by": {
+            "type": "string",
+            "format": "uuid",
+            "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+          },
+          "lost_status_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+          },
+          "lost_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2020-01-01T14:15:00.000000+00:00"
+          },
+          "lost_by": {
+            "type": "string",
+            "format": "uuid",
+            "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+          },
+          "fields": {
+            "type": "object"
+          }
+        }
+      },
+      "DealCreateSchema": {
+        "type": "object",
+        "properties": {
+          "origin_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+          },
+          "name": {
+            "type": "string",
+            "example": "Contact name"
+          },
+          "phone": {
+            "type": "string",
+            "example": "48999999999"
+          },
+          "email": {
+            "type": "string",
+            "example": "contact@email.com"
+          },
+          "username": {
+            "type": "string",
+            "example": "Instagram ID"
+          },
+          "value": {
+            "type": "number",
+            "example": "200.5"
+          },
+          "stage": {
+            "type": "string",
+            "default": "BASE"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+          },
+          "contact_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+          },
+          "fields": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "properties": {
+              "contact": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "organization": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "origin_id"
+        ]
+      },
+      "DealStage": {
+        "type": "string",
+        "default": "BASE"
+      },
+      "DealStatus": {
+        "type": "string",
+        "default": "OPEN",
+        "enum": [
+          "OPEN",
+          "WON",
+          "LOST"
+        ]
+      },
+      "DealUpdateSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Contact name"
+          },
+          "phone": {
+            "type": "string",
+            "example": "48999999999"
+          },
+          "email": {
+            "type": "string",
+            "example": "contact@email.com"
+          },
+          "value": {
+            "type": "number",
+            "example": "200.5"
+          },
+          "stage": {
+            "type": "string",
+            "default": "BASE"
+          },
+          "status": {
+            "type": "string",
+            "default": "OPEN",
+            "enum": [
+              "OPEN",
+              "WON",
+              "LOST"
+            ]
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+          },
+          "contact_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+          },
+          "fields": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "properties": {
+              "contact": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "organization": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AccountFields": {
+        "type": "object",
+        "properties": {
+          "groups": {
+            "type": "object",
+            "properties": {
+              "DEAL": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "CONTACT": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "ORGANIZATION": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "fields": {
+            "type": "object",
+            "properties": {
+              "DEAL": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "TEXT"
+                  },
+                  "group": {
+                    "type": "string",
+                    "example": "default"
+                  },
+                  "label": {
+                    "type": "string",
+                    "example": "notes"
+                  }
+                }
+              },
+              "CONTACT": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "TEXT"
+                  },
+                  "group": {
+                    "type": "string",
+                    "example": "default"
+                  },
+                  "label": {
+                    "type": "string",
+                    "example": "notes"
+                  }
+                }
+              },
+              "ORGANIZATION": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "TEXT"
+                  },
+                  "group": {
+                    "type": "string",
+                    "example": "default"
+                  },
+                  "label": {
+                    "type": "string",
+                    "example": "notes"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Fields": {
+        "type": "object"
+      },
+      "FullPhone": {
+        "type": "string",
+        "example": "+5548999999999"
+      },
+      "Group": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+          },
+          "name": {
+            "type": "string",
+            "example": "Group name"
+          },
+          "archived_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2020-01-01T14:15:00.000000+00:00"
+          },
+          "archived_by": {
+            "type": "string",
+            "format": "uuid",
+            "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+          }
+        }
+      },
+      "ID": {
+        "type": "string",
+        "format": "uuid",
+        "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+      },
+      "LostStatus": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+          },
+          "name": {
+            "type": "string",
+            "example": "Lost status name"
+          }
+        }
+      },
+      "Origin": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+          },
+          "name": {
+            "type": "string",
+            "example": "Origin name"
+          },
+          "group": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+              },
+              "name": {
+                "type": "string",
+                "example": "Group name"
+              }
+            }
+          },
+          "archived_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2020-01-01T14:15:00.000000+00:00"
+          },
+          "archived_by": {
+            "type": "string",
+            "format": "uuid",
+            "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+          }
+        }
+      },
+      "Paginated": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "example": "200",
+            "description": "Response status"
+          },
+          "totalCount": {
+            "type": "integer",
+            "example": "50",
+            "description": "Total items based on current filters"
+          },
+          "page": {
+            "type": "integer",
+            "example": "1",
+            "description": "Current page"
+          },
+          "totalPages": {
+            "type": "integer",
+            "example": "10",
+            "description": "Total pages based on current filters"
+          },
+          "hasNext": {
+            "type": "boolean",
+            "example": "true",
+            "description": "Indicates that has next page"
+          },
+          "hasPrevious": {
+            "type": "boolean",
+            "example": "true",
+            "description": "Indicates that has previous page"
+          }
+        }
+      },
+      "Tag": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+          },
+          "name": {
+            "type": "string",
+            "example": "Tag name"
+          },
+          "color": {
+            "type": "string",
+            "default": "#f44336",
+            "enum": [
+              "#f44336",
+              "#e91e63",
+              "#9c27b0",
+              "#673ab7",
+              "#3f51b5",
+              "#2196f3",
+              "#03a9f4",
+              "#00bcd4",
+              "#009688",
+              "#4caf50",
+              "#8bc34a",
+              "#faa200",
+              "#ff9800",
+              "#ff5722",
+              "#795548",
+              "#607d8b"
+            ]
+          }
+        }
+      },
+      "TagColor": {
+        "type": "string",
+        "default": "#f44336",
+        "enum": [
+          "#f44336",
+          "#e91e63",
+          "#9c27b0",
+          "#673ab7",
+          "#3f51b5",
+          "#2196f3",
+          "#03a9f4",
+          "#00bcd4",
+          "#009688",
+          "#4caf50",
+          "#8bc34a",
+          "#faa200",
+          "#ff9800",
+          "#ff5722",
+          "#795548",
+          "#607d8b"
+        ]
+      },
+      "TagCreateSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Tag name"
+          },
+          "color": {
+            "type": "string",
+            "default": "#f44336",
+            "enum": [
+              "#f44336",
+              "#e91e63",
+              "#9c27b0",
+              "#673ab7",
+              "#3f51b5",
+              "#2196f3",
+              "#03a9f4",
+              "#00bcd4",
+              "#009688",
+              "#4caf50",
+              "#8bc34a",
+              "#faa200",
+              "#ff9800",
+              "#ff5722",
+              "#795548",
+              "#607d8b"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "color"
+        ]
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "8feade82-d77b-4e8b-9d35-fd43e972b5c8"
+          },
+          "email": {
+            "type": "string",
+            "example": "User e-mail"
+          },
+          "first_name": {
+            "type": "string",
+            "example": "User first name"
+          },
+          "last_name": {
+            "type": "string",
+            "example": "User last name"
+          }
+        }
+      }
+    }
+  }
+}

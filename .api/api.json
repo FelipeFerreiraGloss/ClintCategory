@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "apis": [
+    {
+      "identifier": "clint-api",
+      "source": "@clint-api/v1.0#s7w481vm7572le4",
+      "integrity": "sha512-rwi3In4tT908DX8NNoVaEueszbmK1O3r6D0NpjTf9CArCjOkgpxwzYtNmxRaEJFdmXvxg90POMPYZmvDFO0Xiw==",
+      "installerVersion": "6.1.2"
+    }
+  ]
+}

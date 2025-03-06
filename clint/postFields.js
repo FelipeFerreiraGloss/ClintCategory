@@ -4,6 +4,8 @@ import cicloDeCompra from '../functions/ciclo.js';
 
 dotenv.config(); 
 
+//dotenv.config({ path: "./.env" }); 
+
 clintApi.server('https://api.clint.digital/v1');
 
 async function postFields(clintId, fieldObs, obs, cicloCompra, dataVendas, qtdCompra, valorCompra, ticketMedio) {

@@ -2,8 +2,8 @@ import clintApi from '@api/clint-api';
 import dotenv from 'dotenv';
 
 dotenv.config();
+//dotenv.config({ path: "./.env" }); 
 
-// ✅ Inicializa a API uma única vez
 clintApi.server('https://api.clint.digital/v1');
 
 async function getClient(deal_id) {

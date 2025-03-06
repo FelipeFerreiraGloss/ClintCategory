@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config(); 
 
+//dotenv.config({ path: "./.env" }); 
 
 clintApi.server('https://api.clint.digital/v1');
 

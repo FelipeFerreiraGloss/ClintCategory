@@ -25,9 +25,12 @@ function calcularBisnagas(valorCompra) {
   if (valorCompra >= 6019 && valorCompra < 6219) return 88;
   if (valorCompra >= 6219 && valorCompra < 6489) return 92;
   if (valorCompra >= 6489 && valorCompra < 6659) return 96;
-  if (valorCompra >= 6659) return 100;
-
-  return 100; 
+  if (valorCompra >= 6659) {
+    const incremento = Math.floor((valorCompra - 6659) / 66);
+    return 100 + incremento;
+  }
+  return 0; 
 }
 
 export default calcularBisnagas;
+

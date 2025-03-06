@@ -7,8 +7,11 @@ async function categorize(qtdCadeiras, valorCompra, cicloCompra, ticketMedio) {
     let mes = 30
     let rendimentoBisnaga = 4
 
-    qtdCadeiras = qtdCadeiras === 0 ? 2 : qtdCadeiras
-    valorCompra = valorCompra === 0 ? (ticketMedio !== 0 ? ticketMedio : 444) : valorCompra;
+    // Verificar se qtdCadeiras é um número válido, se não, atribuir 2
+    qtdCadeiras = isNaN(qtdCadeiras) || qtdCadeiras === 0 ? 2 : qtdCadeiras;
+
+    //Valor compra não existindo utiliza-se ticket medio e nao usado 
+    valorCompra = (!valorCompra || isNaN(valorCompra)) ? (ticketMedio && !isNaN(ticketMedio) ? ticketMedio : 479) : valorCompra; // alterar caso de erro
 
     console.log(`${qtdCadeiras} cadeiras, ${valorCompra} valor, ${cicloCompra} ciclo de compra`)
 
@@ -24,8 +27,6 @@ async function categorize(qtdCadeiras, valorCompra, cicloCompra, ticketMedio) {
 
     const aplicacoesMensal = bisnagasMensal * rendimentoBisnaga // 16
 
-    
-    
     const resultado = (bisnagasMensal / bisnagasIdeal ) * 100
 
     
@@ -34,17 +35,17 @@ async function categorize(qtdCadeiras, valorCompra, cicloCompra, ticketMedio) {
 
     let categoria 
     if (resultado > 125) {
-        categoria = "Clientes A+";
+        categoria = "8. Clientes A+";
     } else if (resultado >= 100 && resultado <= 125) {
-        categoria = "Clientes A";
+        categoria = "7. Clientes A";
     } else if (resultado >= 75 && resultado < 100) {
-        categoria = "Clientes B";
+        categoria = "6. Clientes B";
     } else if(resultado >=50 && resultado < 75) {
-        categoria = "Clientes C"; 
+        categoria = "5. Clientes C"; 
     } else if (resultado >=25 && resultado <50){
-        categoria = "Clientes D"
+        categoria = "4. Clientes D"
     } else if (resultado < 25 ){
-        categoria = "Clientes Inativos"
+        categoria = "3. Clientes Inativos"
     }
 
     

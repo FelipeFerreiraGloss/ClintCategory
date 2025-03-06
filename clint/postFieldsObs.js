@@ -2,6 +2,8 @@ import clintApi from '@api/clint-api';
 import dotenv from 'dotenv';
 import cicloDeCompra from '../functions/ciclo.js';
 
+
+//dotenv.config({ path: "./.env" }); 
 dotenv.config(); 
 
 clintApi.server('https://api.clint.digital/v1');

@@ -100,9 +100,10 @@ app.post("/category", async (req, res) => {
 
   const deal_id = dados.deal_id;
   const cicloCompra = dados.contact_ciclo_de_compra || 90; // Padrao definido 90
-  const valorCompra = dados.deal_value;
+  const valorCompra = Number(dados.deal_value);
   const qtdCadeiras = Number(dados.organization_quantas_cadeiras_tem);
   const ticketMedio = dados.contact_ticket_medio || 0;
+  
 
   const { categoria, aplicacoesIdeal, bisnagasIdeal, bisnagasMensal, aplicacoesMensal, resultado } = await categorize(qtdCadeiras, valorCompra, cicloCompra, ticketMedio);
 
